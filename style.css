@@ -121,11 +121,11 @@ h2 { margin: 5px 0 0; font-size: 28px; letter-spacing: -.7px; }
 .gate-hit { position: absolute; z-index: 10; opacity: 0; cursor: default; touch-action: none; }
 .gate-hit.valid { opacity: 1; cursor: pointer; }
 .gate-hit.valid::after { content: ''; position: absolute; inset: 0; border-radius: 999px; background: rgba(255,209,102,.4); box-shadow: 0 0 15px rgba(255,209,102,.35); }
-.gate-hit.horizontal { height: 18px; width: 72%; transform: translate(-50%, -50%); }
-.gate-hit.vertical { width: 18px; height: 72%; transform: translate(-50%, -50%); }
+.gate-hit.horizontal { height: 18px; width: 12.5%; transform: translate(-50%, -50%); }
+.gate-hit.vertical { width: 18px; height: 12.5%; transform: translate(-50%, -50%); }
 .gate { position: absolute; z-index: 8; pointer-events: none; border-radius: 999px; background: var(--gate); box-shadow: 0 0 9px rgba(255,209,102,.35); }
-.gate.horizontal { height: 5px; width: 72%; transform: translate(-50%, -50%); }
-.gate.vertical { width: 5px; height: 72%; transform: translate(-50%, -50%); }
+.gate.horizontal { height: 5px; width: 12.5%; transform: translate(-50%, -50%); }
+.gate.vertical { width: 5px; height: 12.5%; transform: translate(-50%, -50%); }
 .board-note { margin-top: 10px; color: var(--muted); font-size: 10px; text-align: center; }
 .result-card { width: min(520px, 100%); padding: 40px 28px; border-radius: 24px; text-align: center; }
 .trophy { font-size: 58px; animation: trophyPop .55s ease-out; }
