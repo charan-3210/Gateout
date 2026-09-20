@@ -13,14 +13,16 @@ import { getDatabase, ref, get, set, update, onValue, onDisconnect, runTransacti
 
 // ===================== FIREBASE CONFIG =====================
 // Replace every value with your own Firebase Web App configuration.
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyA4H9N2pG5VsayUwHfy_o58s3KXg3CgORI",
+  authDomain: "gateout-5f0c9.firebaseapp.com",
+  databaseURL: "https://gateout-5f0c9-default-rtdb.firebaseio.com",
+  projectId: "gateout-5f0c9",
+  storageBucket: "gateout-5f0c9.firebasestorage.app",
+  messagingSenderId: "281924678450",
+  appId: "1:281924678450:web:8ee27300fb76a4968d5d2b",
+  measurementId: "G-1Q3MC1YJ8R"
 };
 // ===========================================================
 
