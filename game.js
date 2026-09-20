@@ -13,16 +13,14 @@ import { getDatabase, ref, get, set, update, onValue, onDisconnect, runTransacti
 
 // ===================== FIREBASE CONFIG =====================
 // Replace every value with your own Firebase Web App configuration.
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyA4H9N2pG5VsayUwHfy_o58s3KXg3CgORI",
-  authDomain: "gateout-5f0c9.firebaseapp.com",
-  databaseURL: "https://gateout-5f0c9-default-rtdb.firebaseio.com",
-  projectId: "gateout-5f0c9",
-  storageBucket: "gateout-5f0c9.firebasestorage.app",
-  messagingSenderId: "281924678450",
-  appId: "1:281924678450:web:8ee27300fb76a4968d5d2b",
-  measurementId: "G-1Q3MC1YJ8R"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
 };
 // ===========================================================
 
@@ -368,7 +366,14 @@ function gateKey(r1, c1, r2, c2) {
 }
 
 function gateBetween(r1, c1, r2, c2) {
+  // A gate is exactly one edge between two neighboring cells.
+  // The canonical key makes the check work in both directions.
+  if (Math.abs(r1 - r2) + Math.abs(c1 - c2) !== 1) return false;
   return !!roomState?.gates?.[gateKey(r1, c1, r2, c2)];
+}
+
+function movementBlockedByGate(r1, c1, r2, c2) {
+  return gateBetween(r1, c1, r2, c2);
 }
 
 function inBounds(r, c) {
@@ -384,7 +389,7 @@ function isOccupied(r, c, movingRole = null) {
 function legalMove(r, c, targetR, targetC, movingRole = role) {
   if (!inBounds(targetR, targetC)) return false;
   if (Math.abs(targetR - r) + Math.abs(targetC - c) !== 1) return false;
-  if (gateBetween(r, c, targetR, targetC)) return false;
+  if (movementBlockedByGate(r, c, targetR, targetC)) return false;
   if (isOccupied(targetR, targetC, movingRole)) return false;
   return true;
 }
@@ -395,6 +400,7 @@ function getLegalMoves(r, c, movingRole = role) {
 }
 
 function gateIsValidForCurrentBoard(r1, c1, r2, c2) {
+  // A gate is one and only one side between two adjacent cells.
   if (!inBounds(r1, c1) || !inBounds(r2, c2)) return false;
   if (Math.abs(r1 - r2) + Math.abs(c1 - c2) !== 1) return false;
   if (gateBetween(r1, c1, r2, c2)) return false;
@@ -437,13 +443,13 @@ function bothPlayersHavePathWithExtraGate(extraGateKey) {
 
 function enumerateGateCandidates() {
   const result = [];
-  // Horizontal boundary: between rows r and r+1, same column c.
+  // Horizontal gate: one cell-side segment between rows r and r+1 in column c.
   for (let r = 0; r < BOARD_SIZE - 1; r++) {
     for (let c = 0; c < BOARD_SIZE; c++) {
       if (gateIsValidForCurrentBoard(r, c, r + 1, c)) result.push({ r1:r, c1:c, r2:r+1, c2:c, orientation:"horizontal" });
     }
   }
-  // Vertical boundary: between columns c and c+1, same row r.
+  // Vertical gate: one cell-side segment between columns c and c+1 in row r.
   for (let r = 0; r < BOARD_SIZE; r++) {
     for (let c = 0; c < BOARD_SIZE - 1; c++) {
       if (gateIsValidForCurrentBoard(r, c, r, c + 1)) result.push({ r1:r, c1:c, r2:r, c2:c+1, orientation:"vertical" });
@@ -500,6 +506,7 @@ function renderGates(board) {
     const [r2,c2] = b.split(",").map(Number);
     const gate = document.createElement("span");
     const horizontal = r1 !== r2;
+    // CSS gives this segment exactly 1/8 of the board dimension = one cell side.
     gate.className = `gate ${horizontal ? "horizontal" : "vertical"}`;
     if (horizontal) {
       gate.style.left = `${((c1 + .5) / BOARD_SIZE) * 100}%`;
