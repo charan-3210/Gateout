@@ -14,6 +14,7 @@ import { getDatabase, ref, get, set, update, onValue, onDisconnect, runTransacti
 // ===================== FIREBASE CONFIG =====================
 // Replace every value with your own Firebase Web App configuration.
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyA4H9N2pG5VsayUwHfy_o58s3KXg3CgORI",
   authDomain: "gateout-5f0c9.firebaseapp.com",
