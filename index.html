@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="Two-player real-time online board game powered by Firebase.">
+  <title>Gatebound — Online Board Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app" class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">G</span>
+        <div>
+          <strong>Gatebound</strong>
+          <small>2-player online board game</small>
+        </div>
+      </div>
+      <div id="connectionBadge" class="connection-badge offline">Connecting…</div>
+    </header>
+
+    <main>
+      <section id="homeScreen" class="screen active">
+        <div class="hero-card">
+          <div class="hero-icon">◈</div>
+          <h1>Reach the other side.</h1>
+          <p>Move one cell or place one gate each turn. Outsmart your opponent and reach their starting side first.</p>
+          <div class="home-actions">
+            <button id="createRoomBtn" class="primary-btn">Create Room</button>
+            <button id="showJoinBtn" class="secondary-btn">Join Room</button>
+          </div>
+          <div id="joinPanel" class="join-panel hidden">
+            <label for="roomCodeInput">Room code</label>
+            <div class="join-row">
+              <input id="roomCodeInput" maxlength="6" inputmode="text" autocomplete="off" placeholder="ABC123" aria-label="Room code">
+              <button id="joinRoomBtn" class="primary-btn compact">Join</button>
+            </div>
+            <button id="cancelJoinBtn" class="text-btn">Cancel</button>
+          </div>
+          <div id="homeMessage" class="message" aria-live="polite"></div>
+        </div>
+        <div class="rules-card">
+          <div><span>64</span><small>cells</small></div>
+          <div><span>2</span><small>players</small></div>
+          <div><span>1</span><small>action / turn</small></div>
+          <div><span>∞</span><small>gates</small></div>
+        </div>
+      </section>
+
+      <section id="lobbyScreen" class="screen">
+        <div class="panel-card lobby-card">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">MULTIPLAYER LOBBY</span>
+              <h2>Room <span id="lobbyRoomCode">------</span></h2>
+            </div>
+            <button id="copyRoomBtn" class="icon-btn" title="Copy room link">⧉</button>
+          </div>
+          <div class="room-link-row">
+            <input id="roomLinkInput" readonly aria-label="Room link">
+            <button id="shareRoomBtn" class="secondary-btn compact">Share</button>
+          </div>
+          <div class="players-list">
+            <div id="lobbyPlayer1" class="player-card player-one">
+              <span class="player-dot"></span>
+              <div><strong>Player 1</strong><small id="p1LobbyStatus">Waiting…</small></div>
+              <span class="status-pill" id="p1LobbyPill">YOU</span>
+            </div>
+            <div id="lobbyPlayer2" class="player-card player-two">
+              <span class="player-dot"></span>
+              <div><strong>Player 2</strong><small id="p2LobbyStatus">Waiting for player…</small></div>
+              <span class="status-pill muted" id="p2LobbyPill">WAITING</span>
+            </div>
+          </div>
+          <div id="lobbyMessage" class="message" aria-live="polite"></div>
+          <div class="lobby-actions">
+            <button id="startGameBtn" class="primary-btn" disabled>Start Game</button>
+            <button id="leaveRoomBtn" class="secondary-btn">Leave Room</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="gameScreen" class="screen game-screen">
+        <div class="game-header panel-card">
+          <div class="game-player-card player-one">
+            <span class="piece-mini"></span>
+            <div><strong>Player 1</strong><small id="gameP1Status">Connected</small></div>
+          </div>
+          <div class="turn-center">
+            <span class="eyebrow">CURRENT TURN</span>
+            <strong id="turnLabel">—</strong>
+            <small id="roomLabel">Room ------</small>
+          </div>
+          <div class="game-player-card player-two right">
+            <div><strong>Player 2</strong><small id="gameP2Status">Connected</small></div>
+            <span class="piece-mini opponent"></span>
+          </div>
+        </div>
+
+        <div class="game-layout">
+          <aside class="side-panel panel-card">
+            <div class="your-turn-card" id="yourTurnCard">
+              <span class="turn-dot"></span>
+              <strong id="turnStateText">Waiting…</strong>
+            </div>
+            <div class="action-section">
+              <span class="eyebrow">YOUR ACTION</span>
+              <button id="moveModeBtn" class="action-btn active" disabled>
+                <span class="action-icon">✦</span><span>Move</span><small>One cell</small>
+              </button>
+              <button id="gateModeBtn" class="action-btn" disabled>
+                <span class="action-icon">━</span><span>Place Gate</span><small>Block one crossing</small>
+              </button>
+            </div>
+            <div class="legend">
+              <div><span class="legend-piece own"></span>You</div>
+              <div><span class="legend-piece opp"></span>Opponent</div>
+              <div><span class="legend-gate"></span>Gate</div>
+            </div>
+            <div class="game-actions">
+              <button id="copyGameRoomBtn" class="secondary-btn">Copy Room Code</button>
+              <button id="quitGameBtn" class="text-btn danger">Leave Room</button>
+            </div>
+          </aside>
+
+          <div class="board-area">
+            <div id="board" class="board" aria-label="8 by 8 game board"></div>
+            <div class="board-note" id="boardNote">Your goal is the opponent’s starting side.</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="resultScreen" class="screen">
+        <div class="result-card panel-card">
+          <div class="trophy">🏆</div>
+          <span class="eyebrow">GAME OVER</span>
+          <h2 id="resultTitle">PLAYER 1 WINS</h2>
+          <p id="resultText">The winning player reached the opponent’s starting side.</p>
+          <div class="result-actions">
+            <button id="playAgainBtn" class="primary-btn">Play Again</button>
+            <button id="resultHomeBtn" class="secondary-btn">Return to Home</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <div id="loadingOverlay" class="loading-overlay hidden"><div class="spinner"></div><span id="loadingText">Connecting…</span></div>
+  </div>
+
+  <script type="module" src="game.js"></script>
+</body>
+</html>
